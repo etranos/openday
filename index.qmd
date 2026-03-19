@@ -122,7 +122,7 @@ The great advantage of software such as R is that it has available a large numbe
 
 
 ```{r}
-#| include: false
+#| collapse: true
 
 if(!"tidyverse" %in% installed.packages()[,1]) install.packages("tidyverse")
 if(!"jsonlite" %in% installed.packages()[,1]) install.packages("jsonlite")
@@ -236,7 +236,7 @@ dat %>% mutate(total = rowSums(across(c(4:21))),           # total jobs in a war
     facet_wrap(vars(Ward), ncol = 2)                       # facet_wrap creates two graphs based on `ward` and puts one next to each other
 ```
 
-Obviously the `x` labels are quite ugly. Let's fix it.
+Obviously the `x` labels are quite ugly. Let's fix it. Check the two extra lines in the code below.
 
 ```{r comparison with nicer labels}
 dat %>% mutate(total = rowSums(across(c(4:21))),           # total jobs in a ward

@@ -228,11 +228,40 @@ window.Quarto = {
 <section id="step-1-installload-any-required-libraries" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-installload-any-required-libraries">Step 1: Install/load any required libraries</h3>
 <p>The great advantage of software such as R is that it has available a large number of additional libraries that extend its functionality – for mapping, for example. The ones we need today are listed below. The code chunk, below, checks to see if these libraries have been installed already, if not then installs them, and then instructs that they are required for the current session in R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">"tidyverse"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="dv">1</span>]) <span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">"jsonlite"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="dv">1</span>]) <span class="fu">install.packages</span>(<span class="st">"jsonlite"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">"sf"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="dv">1</span>]) <span class="fu">install.packages</span>(<span class="st">"sf"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(tidyverse)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading required package: tidyverse</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ dplyr     1.1.4     ✔ readr     2.1.5</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ forcats   1.0.0     ✔ stringr   1.5.1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ ggplot2   3.5.2     ✔ tibble    3.2.1</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">## ✔ purrr     1.0.4     </span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="do">## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="do">## ✖ dplyr::filter() masks stats::filter()</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="do">## ✖ dplyr::lag()    masks stats::lag()</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(jsonlite)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading required package: jsonlite</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="do">## Attaching package: 'jsonlite'</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="do">## The following object is masked from 'package:purrr':</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="do">##     flatten</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(sf)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading required package: sf</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="do">## Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>To access the data, we are going to use the function <code>fromJSON()</code> from the <code>jsonlite</code> package. Please check the syntax of this function as well as the other function of this package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"https://services2.arcgis.com/a4vR8lmmksFixzmB/ArcGIS/rest/services/Jobs_by_Ward_(by_industry)_in_Bristol_2020/FeatureServer/0/query?outFields=*&amp;where=1%3D1&amp;f=geojson"</span>, <span class="at">flatten =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>oa.ew <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/9/query?where=1%3D1&amp;outFields=*&amp;outSR=4326&amp;f=json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"https://services2.arcgis.com/a4vR8lmmksFixzmB/ArcGIS/rest/services/Jobs_by_Ward_(by_industry)_in_Bristol_2020/FeatureServer/0/query?outFields=*&amp;where=1%3D1&amp;f=geojson"</span>, <span class="at">flatten =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>oa.ew <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/9/query?where=1%3D1&amp;outFields=*&amp;outSR=4326&amp;f=json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `ESRIJSON' from data source 
   `https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/9/query?where=1%3D1&amp;outFields=*&amp;outSR=4326&amp;f=json' 
@@ -245,14 +274,14 @@ window.Quarto = {
 <p><strong>Please note</strong> that the above API link is different than the one you can obtain today from <a href="https://opendata.bristol.gov.uk/datasets/ca24dc2e210940e0aa9ad3a4785a591b_17/explore">opendata.bristol.gov.uk</a>. If you use the most recent, you will need to tweak the code bellow. For the purpose of the practical, please use the link provided in the above chunk of code. This is an example of how ephemeral data structures can be!</p>
 <p>We now have an <code>R</code> object called <code>dat</code>. Let’s try to see how it looks like</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "list"</code></pre>
 </div>
 </div>
 <p>So, this is a list. If you need a reminder for what a list is, see <a href="http://adv-r.had.co.nz/Data-structures.html">here</a>. Now the difficult part. Let’s try to figure out the structure of this <code>JSON</code> formatted data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 2
  $ type    : chr "FeatureCollection"
@@ -331,7 +360,7 @@ window.Quarto = {
 </div>
 <p>And if you want to see how the dataframe <code>dat$features</code> looks like, the below function will show the first five rows.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat<span class="sc">$</span>features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat<span class="sc">$</span>features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 34
 Columns: 28
@@ -373,13 +402,13 @@ $ properties.Shape__Length                   &lt;dbl&gt; 39581.107, 20424.954, 1
 </ol>
 <p>To do all the above, we will use the below functions from the <code>dplyr</code> package, which is part of the <a href="https://www.tidyverse.org/"><code>tidyverse</code> ecosystem</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat<span class="sc">$</span>features <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>type, <span class="sc">-</span>id, <span class="sc">-</span>geometry.type, <span class="sc">-</span>geometry.coordinates, <span class="sc">-</span>properties.OBJECTID, <span class="sc">-</span>properties.Shape__Area, </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span>properties.Shape__Length) <span class="sc">%&gt;%</span>                       <span class="co"># remove useless columns</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(<span class="sc">~</span><span class="fu">sub</span>(<span class="st">"properties."</span>, <span class="st">""</span>, .)) <span class="sc">%&gt;%</span>                 <span class="co"># ~ introduces a formula: function `sub` substitutes (in other words replaces) the string "properties." with an empty sting "" for all columns (symbol .) </span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(Ward, Ward_code_1) <span class="sc">%&gt;%</span>                             <span class="co"># looks better</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Ward_code =</span> Ward_code_1) <span class="sc">%&gt;%</span>                         <span class="co"># as above, Ward_code looks better than Ward_code_1</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()                                                   <span class="co"># a glimpse of the output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat<span class="sc">$</span>features <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>type, <span class="sc">-</span>id, <span class="sc">-</span>geometry.type, <span class="sc">-</span>geometry.coordinates, <span class="sc">-</span>properties.OBJECTID, <span class="sc">-</span>properties.Shape__Area, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span>properties.Shape__Length) <span class="sc">%&gt;%</span>                       <span class="co"># remove useless columns</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(<span class="sc">~</span><span class="fu">sub</span>(<span class="st">"properties."</span>, <span class="st">""</span>, .)) <span class="sc">%&gt;%</span>                 <span class="co"># ~ introduces a formula: function `sub` substitutes (in other words replaces) the string "properties." with an empty sting "" for all columns (symbol .) </span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(Ward, Ward_code_1) <span class="sc">%&gt;%</span>                             <span class="co"># looks better</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Ward_code =</span> Ward_code_1) <span class="sc">%&gt;%</span>                         <span class="co"># as above, Ward_code looks better than Ward_code_1</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()                                                   <span class="co"># a glimpse of the output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 34
 Columns: 21
@@ -408,34 +437,6 @@ $ Arts_entertainment_recreation__ &lt;int&gt; 250, 175, 200, 300, 350, 100, 50, 
 </div>
 <p>Let’s try now to do some analysis based on these data and create some outputs. The below code will create a plot for the distribution of jobs by industry in Central Bristol. The code is quite long but it is not difficult to understand if you take it one step at a time. I have added comments to the code to make it easier to understand.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>))),           <span class="co"># total jobs in a ward</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>),                             <span class="co"># select the columns you are interested in</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.names =</span> <span class="st">"{col}_share"</span>) <span class="sc">/</span> total) <span class="sc">%&gt;%</span> <span class="co"># divide these columns by total to create industry share within ward  </span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># and name the new columns as oldname_share</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">23</span><span class="sc">:</span><span class="dv">40</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">!</span><span class="fu">c</span>(Ward, Ward_code),                        <span class="co"># These are the columns I am 'pivoting'</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"industry"</span>,                      <span class="co"># This is how I will name the column with all the industries ...</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"jobs_share"</span>) <span class="sc">%&gt;%</span>               <span class="co"># ... and the column with the jobs percentage</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># Look https://tidyr.tidyverse.org/articles/pivot.html to </span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># understand the long to wide / wide to long transformations.</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ward <span class="sc">==</span> <span class="st">"Central"</span>) <span class="sc">%&gt;%</span>                            <span class="co"># Let's focus on Central Bristol</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>industry, <span class="at">y=</span>jobs_share)) <span class="sc">+</span>                  <span class="co"># ... and create a bar chart for it jobs distribution</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># to understand the "identity part go on the Details section of the geom_bar documentation:</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># https://www.rdocumentation.org/packages/ggplot2/versions/1.0.1/topics/geom_bar</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span>     <span class="co"># This line rotates the x labels,</span></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"jobs %"</span>)                                         <span class="co"># and here we rename the y axis. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/analysis-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Now, let’s do something slightly more interesting. Let’s create two plots to compare the job distribution between two Bristol wards, Central and Easton.</p>
-<div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>))),           <span class="co"># total jobs in a ward</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>),                             <span class="co"># select the columns you are interested in</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.names =</span> <span class="st">"{col}_share"</span>) <span class="sc">/</span> total) <span class="sc">%&gt;%</span> <span class="co"># divide these columns by total to create industry share within ward  </span></span>
@@ -446,22 +447,23 @@ $ Arts_entertainment_recreation__ &lt;int&gt; 250, 175, 200, 300, 350, 100, 50, 
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"jobs_share"</span>) <span class="sc">%&gt;%</span>               <span class="co"># ... and the column with the jobs percentage</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># Look https://tidyr.tidyverse.org/articles/pivot.html to </span></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># understand the long to wide / wide to long transformations.</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ward <span class="sc">==</span> <span class="st">"Central"</span> <span class="sc">|</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>         Ward <span class="sc">==</span> <span class="st">"Easton"</span>) <span class="sc">%&gt;%</span>                             <span class="co"># Let's focus on Easton and Central Bristol</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>industry, <span class="at">y=</span>jobs_share)) <span class="sc">+</span>                  <span class="co"># ... and create a bar chart for it jobs distribution</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span>     <span class="co"># This line rotates the x labels,</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"jobs %"</span>) <span class="sc">+</span>                                       <span class="co"># and here we rename the y axis. </span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Ward), <span class="at">ncol =</span> <span class="dv">2</span>)                       <span class="co"># facet_wrap creates two graphs based on `ward` and puts one next to each other</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ward <span class="sc">==</span> <span class="st">"Central"</span>) <span class="sc">%&gt;%</span>                            <span class="co"># Let's focus on Central Bristol</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>industry, <span class="at">y=</span>jobs_share)) <span class="sc">+</span>                  <span class="co"># ... and create a bar chart for it jobs distribution</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># to understand the "identity part go on the Details section of the geom_bar documentation:</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># https://www.rdocumentation.org/packages/ggplot2/versions/1.0.1/topics/geom_bar</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span>     <span class="co"># This line rotates the x labels,</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"jobs %"</span>)                                         <span class="co"># and here we rename the y axis. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/comparison-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/analysis-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Obviously the <code>x</code> labels are quite ugly. Let’s fix it.</p>
+<p>Now, let’s do something slightly more interesting. Let’s create two plots to compare the job distribution between two Bristol wards, Central and Easton.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>))),           <span class="co"># total jobs in a ward</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>),                             <span class="co"># select the columns you are interested in</span></span>
@@ -473,18 +475,45 @@ $ Arts_entertainment_recreation__ &lt;int&gt; 250, 175, 200, 300, 350, 100, 50, 
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"jobs_share"</span>) <span class="sc">%&gt;%</span>               <span class="co"># ... and the column with the jobs percentage</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># Look https://tidyr.tidyverse.org/articles/pivot.html to </span></span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># understand the long to wide / wide to long transformations.</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">industry =</span>  <span class="fu">gsub</span>(<span class="st">"_share"</span>, <span class="st">""</span>, industry)) <span class="sc">%&gt;%</span>     <span class="co"># This line removes the "_share" part from the industry names...</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">industry =</span>  <span class="fu">sub</span>(<span class="st">"__.*"</span>, <span class="st">""</span>, industry)) <span class="sc">%&gt;%</span>        <span class="co"># ... and this drops everything after the first double underscore</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># (if it exists)</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ward <span class="sc">==</span> <span class="st">"Central"</span> <span class="sc">|</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>         Ward <span class="sc">==</span> <span class="st">"Easton"</span>) <span class="sc">%&gt;%</span>                             <span class="co"># Let's focus on Easton and Central Bristol</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>industry, <span class="at">y=</span>jobs_share)) <span class="sc">+</span>                  <span class="co"># ... and create a bar chart for it jobs distribution</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span>     <span class="co"># This line rotates the x labels,</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"jobs %"</span>) <span class="sc">+</span>                                       <span class="co"># and here we rename the y axis. </span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Ward), <span class="at">ncol =</span> <span class="dv">2</span>)                       <span class="co"># facet_wrap creates two graphs based on `ward` and puts one next to each other</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ward <span class="sc">==</span> <span class="st">"Central"</span> <span class="sc">|</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>         Ward <span class="sc">==</span> <span class="st">"Easton"</span>) <span class="sc">%&gt;%</span>                             <span class="co"># Let's focus on Easton and Central Bristol</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>industry, <span class="at">y=</span>jobs_share)) <span class="sc">+</span>                  <span class="co"># ... and create a bar chart for it jobs distribution</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span>     <span class="co"># This line rotates the x labels,</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"jobs %"</span>) <span class="sc">+</span>                                       <span class="co"># and here we rename the y axis. </span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Ward), <span class="at">ncol =</span> <span class="dv">2</span>)                       <span class="co"># facet_wrap creates two graphs based on `ward` and puts one next to each other</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/comparison-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Obviously the <code>x</code> labels are quite ugly. Let’s fix it. Check the two extra lines in the code below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>))),           <span class="co"># total jobs in a ward</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">4</span><span class="sc">:</span><span class="dv">21</span>),                             <span class="co"># select the columns you are interested in</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.names =</span> <span class="st">"{col}_share"</span>) <span class="sc">/</span> total) <span class="sc">%&gt;%</span> <span class="co"># divide these columns by total to create industry share within ward  </span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># and name the new columns as oldname_share</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">23</span><span class="sc">:</span><span class="dv">40</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">!</span><span class="fu">c</span>(Ward, Ward_code),                        <span class="co"># These are the columns I am 'pivoting'</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"industry"</span>,                      <span class="co"># This is how I will name the column with all the industries ...</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"jobs_share"</span>) <span class="sc">%&gt;%</span>               <span class="co"># ... and the column with the jobs percentage</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># Look https://tidyr.tidyverse.org/articles/pivot.html to </span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># understand the long to wide / wide to long transformations.</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">industry =</span>  <span class="fu">gsub</span>(<span class="st">"_share"</span>, <span class="st">""</span>, industry)) <span class="sc">%&gt;%</span>     <span class="co"># This line removes the "_share" part from the industry names...</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">industry =</span>  <span class="fu">sub</span>(<span class="st">"__.*"</span>, <span class="st">""</span>, industry)) <span class="sc">%&gt;%</span>        <span class="co"># ... and this drops everything after the first double underscore</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># (if it exists)</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ward <span class="sc">==</span> <span class="st">"Central"</span> <span class="sc">|</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>         Ward <span class="sc">==</span> <span class="st">"Easton"</span>) <span class="sc">%&gt;%</span>                             <span class="co"># Let's focus on Easton and Central Bristol</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>industry, <span class="at">y=</span>jobs_share)) <span class="sc">+</span>                  <span class="co"># ... and create a bar chart for it jobs distribution</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">90</span>)) <span class="sc">+</span>     <span class="co"># This line rotates the x labels,</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"jobs %"</span>) <span class="sc">+</span>                                       <span class="co"># and here we rename the y axis. </span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Ward), <span class="at">ncol =</span> <span class="dv">2</span>)                       <span class="co"># facet_wrap creates two graphs based on `ward` and puts one next to each other</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

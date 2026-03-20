@@ -43,13 +43,11 @@ Programming languages such as [R](https://cran.r-project.org/) and [Python](http
 
 We do believe that a *critical understanding* of the technicalities of data handling and analysis is important for all geographers, even in an era of [vibe coding](https://en.wikipedia.org/wiki/Vibe_coding).
 
-
 ## Practicalities for today's exercise
 
 All you need to do for today's session is follow along with the instructor, copying and pasting code from this document into the R Console as they do. **Please do not rush ahead as this is more likely to generate errors that you will then need to go back and correct**. Just take it one step at a time, in company with the instructor. The purpose of the session is not to teach you coding so there is no need to worry about what the code fully means. It is simply to give you a flavour of the sort of skills we teach our students.
 
 If you wish, you could run this practical again from a personal computer when you get home. If you do, take a note of the web address, which is [https://etranos.info/openday](https://etranos.info/openday) and be aware that you will first need to install [R](https://cran.r-project.org/) and then [RStudio Desktop](https://posit.co/download/rstudio-desktop/) on the computer for the following code to work. These software are free and operate on Windows, Mac OS and Linux.
-
 
 ## Aims of the exercise
 
@@ -71,7 +69,7 @@ More commonly, the client might be a mobile phone app (e.g. train network status
 
 APIs can be private or public types. For more inthe description from @amazonWhatAPI [here](https://aws.amazon.com/what-is/api/#:~:text=API%20stands%20for%20Application%20Programming,other%20using%20requests%20and%20responses.)
 
-## JSON file format
+## The JSON file format
 
 Although some urban data can be downloaded as a tidy[^1] table in a `.csv` format, most APIs will ship data to you in a `JSON` format.
 
@@ -110,13 +108,11 @@ download the data in `JSON` file format instead of just downloading a `.csv` fil
 
 So, let's try to access these data programmatically. First, we need to load the relevant `R` packages
 
-
 ### To Begin
 
 When the instructor invites you to do so, please open RStudio on your computer.
 
-
-### Step 1: Install/load any required libraries
+### Install/load any required libraries
 
 The great advantage of software such as R is that it has available a large number of additional libraries that extend its functionality -- for mapping, for example. The ones we need today are listed below. The code chunk, below, checks to see if these libraries have been installed already, if not then installs them, and then instructs that they are required for the current session in R.
 
@@ -135,16 +131,22 @@ require(jsonlite)
 require(sf)
 ```
 
+### Access urban data through an API
 
 To access the data, we are going to use the function `fromJSON()` from the `jsonlite` package. Please check the syntax of this function as well as the other function of this package.
 
-```{r get data}
-dat <- jsonlite::fromJSON("https://services2.arcgis.com/a4vR8lmmksFixzmB/ArcGIS/rest/services/Jobs_by_Ward_(by_industry)_in_Bristol_2020/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson", flatten = TRUE)
+```{r get data old}
+#| echo: false
+#| eval: false
 
-oa.ew <- st_read("https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/9/query?where=1%3D1&outFields=*&outSR=4326&f=json")
+dat <- jsonlite::fromJSON("https://services2.arcgis.com/a4vR8lmmksFixzmB/ArcGIS/rest/services/Jobs_by_Ward_(by_industry)_in_Bristol_2020/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson", flatten = TRUE)
 ```
 
-**Please note** that the above API link is different than the one you can obtain today from [opendata.bristol.gov.uk](https://opendata.bristol.gov.uk/datasets/ca24dc2e210940e0aa9ad3a4785a591b_17/explore). If you use the most recent, you will need to tweak the code bellow. For the purpose of the practical, please use the link provided in the above chunk of code. This is an example of how ephemeral data structures can be!
+<!-- **Please note** that the above API link is different than the one you can obtain today from [opendata.bristol.gov.uk](https://opendata.bristol.gov.uk/datasets/ca24dc2e210940e0aa9ad3a4785a591b_17/explore). If you use the most recent, you will need to tweak the code bellow. For the purpose of the practical, please use the link provided in the above chunk of code. This is an example of how ephemeral data structures can be! -->
+
+```{r get data}
+dat <- jsonlite::fromJSON("https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/17/query?f=json&where=(YEAR%20IN%20('2020'))&outFields=*", flatten = TRUE)
+```
 
 We now have an `R` object called `dat`. Let's try to see how it looks like
 
@@ -173,42 +175,38 @@ And if you want to see how the dataframe `dat$features` looks like, the below fu
 glimpse(dat$features)
 ```
 
-Looking into the above, I can think of the the following necessary data cleaning and wrangling steps:
+### Data manipulation
 
-1.  remove the first five columns as they don't include any useful data
+Looking into the above, I think we should remove the string "properties." from the column names.
 
-2.  remove the string "properties." from the column names
-
-3.  although not necessary, it is common practice for the first columns to contain identification data such as the ward names and codes.
-
-To do all the above, we will use the below functions from the `dplyr` package, which is part of the [`tidyverse` ecosystem](https://www.tidyverse.org/).
+To do this, we will use the below functions from the `dplyr` package, which is part of the [`tidyverse` ecosystem](https://www.tidyverse.org/).
 
 ```{r wrangling}
 dat <- dat$features %>% 
-  select(-type, -id, -geometry.type, -geometry.coordinates, -properties.OBJECTID, -properties.Shape__Area, 
-         -properties.Shape__Length) %>%                       # remove useless columns
-  rename_with(~sub("properties.", "", .)) %>%                 # ~ introduces a formula: function `sub` substitutes (in other words replaces) the string "properties." with an empty sting "" for all columns (symbol .) 
-  relocate(Ward, Ward_code_1) %>%                             # looks better
-  rename(Ward_code = Ward_code_1) %>%                         # as above, Ward_code looks better than Ward_code_1
-  glimpse()                                                   # a glimpse of the output
+  rename_with(~sub("attributes.", "", .))   # ~ introduces a formula: function `sub` substitutes (in other words replaces) the string   
+
+dat %>% glimpse()                           # provides a glimpse of the output
 ```
+
+### Some priliminary analysis
 
 Let's try now to do some analysis based on these data and create some outputs. The below code will create a plot for the distribution of jobs by industry in Central Bristol. The code is quite long but it is not difficult to understand if you take it one step at a time. I have added comments to the code to make it easier to understand.
 
 ```{r analysis}
-dat %>% mutate(total = rowSums(across(c(4:21))),           # total jobs in a ward
-               across(c(4:21),                             # select the columns you are interested in
+dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
+               across(c(5:22),                             # select the columns you are interested in
                       .names = "{col}_share") / total) %>% # divide these columns by total to create industry share within ward  
                                                            # and name the new columns as oldname_share
-  select(1:2, 23:40) %>%
-  pivot_longer(!c(Ward, Ward_code),                        # These are the columns I am 'pivoting'
+  select(2:3, 24:41) %>%
+  pivot_longer(!c(WARD_NAME, WARD_CODE),                        # These are the columns I am 'pivoting'
                names_to = "industry",                      # This is how I will name the column with all the industries ...
                values_to = "jobs_share") %>%               # ... and the column with the jobs percentage
                                                            # Look https://tidyr.tidyverse.org/articles/pivot.html to 
                                                            # understand the long to wide / wide to long transformations.
-  filter(Ward == "Central") %>%                            # Let's focus on Central Bristol
+  filter(WARD_NAME == "Central") %>%                            # Let's focus on Central Bristol
   ggplot(aes(x=industry, y=jobs_share)) +                  # ... and create a bar chart for it jobs distribution
     geom_bar(stat = "identity") +
+  
 # to understand the "identity part go on the Details section of the geom_bar documentation:
 # https://www.rdocumentation.org/packages/ggplot2/versions/1.0.1/topics/geom_bar
     
@@ -219,54 +217,77 @@ dat %>% mutate(total = rowSums(across(c(4:21))),           # total jobs in a war
 Now, let's do something slightly more interesting. Let's create two plots to compare the job distribution between two Bristol wards, Central and Easton.
 
 ```{r comparison}
-dat %>% mutate(total = rowSums(across(c(4:21))),           # total jobs in a ward
-               across(c(4:21),                             # select the columns you are interested in
+dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
+               across(c(5:22),                             # select the columns you are interested in
                       .names = "{col}_share") / total) %>% # divide these columns by total to create industry share within ward  
                                                            # and name the new columns as oldname_share
-  select(1:2, 23:40) %>%
-  pivot_longer(!c(Ward, Ward_code),                        # These are the columns I am 'pivoting'
+  select(2:3, 24:41) %>%
+  pivot_longer(!c(WARD_NAME, WARD_CODE),                        # These are the columns I am 'pivoting'
                names_to = "industry",                      # This is how I will name the column with all the industries ...
                values_to = "jobs_share") %>%               # ... and the column with the jobs percentage
                                                            # Look https://tidyr.tidyverse.org/articles/pivot.html to 
                                                            # understand the long to wide / wide to long transformations.
-  filter(Ward == "Central" |
-         Ward == "Easton") %>%                             # Let's focus on Easton and Central Bristol
+  filter(WARD_NAME == "Central" |
+         WARD_NAME == "Easton") %>%                             # Let's focus on Easton and Central Bristol
   ggplot(aes(x=industry, y=jobs_share)) +                  # ... and create a bar chart for it jobs distribution
     geom_bar(stat = "identity") +
     scale_x_discrete(guide = guide_axis(angle = 90)) +     # This line rotates the x labels,
     ylab("jobs %") +                                       # and here we rename the y axis. 
-    facet_wrap(vars(Ward), ncol = 2)                       # facet_wrap creates two graphs based on `ward` and puts one next to each other
+    facet_wrap(vars(WARD_NAME), ncol = 2)                       # facet_wrap creates two graphs based on `ward` and puts one next to each other
 ```
 
-Obviously the `x` labels are quite ugly. Let's fix it. Check the two extra lines in the code below.
+Obviously the `x` labels are quite ugly. Let's fix them. Check the extra lines in the code below.
 
 ```{r comparison with nicer labels}
-dat %>% mutate(total = rowSums(across(c(4:21))),           # total jobs in a ward
-               across(c(4:21),                             # select the columns you are interested in
+dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
+               across(c(5:22),                             # select the columns you are interested in
                       .names = "{col}_share") / total) %>% # divide these columns by total to create industry share within ward  
                                                            # and name the new columns as oldname_share
-  select(1:2, 23:40) %>%
-  pivot_longer(!c(Ward, Ward_code),                        # These are the columns I am 'pivoting'
+  select(2:3, 24:41) %>%
+  pivot_longer(!c(WARD_NAME, WARD_CODE),                   # These are the columns I am 'pivoting'
                names_to = "industry",                      # This is how I will name the column with all the industries ...
                values_to = "jobs_share") %>%               # ... and the column with the jobs percentage
                                                            # Look https://tidyr.tidyverse.org/articles/pivot.html to 
                                                            # understand the long to wide / wide to long transformations.
   
-  mutate(industry =  gsub("_share", "", industry)) %>%     # This line removes the "_share" part from the industry names...
-  mutate(industry =  sub("__.*", "", industry)) %>%        # ... and this drops everything after the first double underscore
-                                                           # (if it exists)
-  
-  filter(Ward == "Central" |
-         Ward == "Easton") %>%                             # Let's focus on Easton and Central Bristol
+  mutate(industry =  gsub("_share", "", industry)) %>%     # This line removes the "_share" part from the industry names,
+  mutate(industry =  sub("__.*", "", industry)) %>%        # ... and this drops everything after the first double underscore (if it exists)
+  mutate(industry =  gsub("_", " ", industry)) %>%         # ... and this replaces _ with spaces.
+  mutate(industry = str_to_lower(industry)) %>%            # This line makes all industry names lower case
+                                                           
+  filter(WARD_NAME == "Central" |
+         WARD_NAME == "Easton") %>%                        # Let's focus on Easton and Central Bristol
   ggplot(aes(x=industry, y=jobs_share)) +                  # ... and create a bar chart for it jobs distribution
     geom_bar(stat = "identity") +
     scale_x_discrete(guide = guide_axis(angle = 90)) +     # This line rotates the x labels,
     ylab("jobs %") +                                       # and here we rename the y axis. 
-    facet_wrap(vars(Ward), ncol = 2)                       # facet_wrap creates two graphs based on `ward` and puts one next to each other
+    facet_wrap(vars(WARD_NAME), ncol = 2)                  # facet_wrap creates two graphs based on `ward` and puts one next to each other
+```
+
+### Do your first map!
+
+What is a geographer without a map? Let's create a map of the total number of jobs in each ward. 
+
+To do this, we need to first download the spatial information for Bristol's wards. We can do this with the `st_read()` function from the `sf` package.
+Again, this is freely available from [opendata.bristol.gov.uk](https://opendata.bristol.gov.uk/datasets/793b569f6f56442bb9e6761f249edd90_4/explore) and you can find the relevant link under `View API Resources` as `GeoJSON`. 
+
+```{r}
+oa.ew <- st_read("https://maps2.bristol.gov.uk/server2/rest/services/ext/ll_boundaries/MapServer/4/query?outFields=*&where=1%3D1&f=geojson")
+```
+
+Then, we need to merge the `oa.ew` spatial dataframe that contains the spatial information for Bristol's wards
+`dat` dataframe that contains all the job data. We can do this with the `left_join()` function from the `dplyr` package and then create a map.
+
+```{r}
+left_join(oa.ew, dat, by = c("WARD_ID" = "WARD_CODE")) %>% 
+  mutate(total_jobs = rowSums(across(c(10:27)))) %>% # create a new column with the total number of jobs in each ward
+  ggplot() +
+    geom_sf(aes(fill = total_jobs)) +               # create a choropleth map with the total number of jobs in each ward
+    scale_fill_viridis_c() +                        # use a nice colour palette
+    theme_void()                                    # remove axes and background
 ```
 
 Well done! You've just utilised Bristol's open data and became part of the urban open data revolution 😃.
-
 
 ```{block, type='alert alert-warning'}
 **On your own time:** Search for some other interesting data from 

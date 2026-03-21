@@ -177,7 +177,7 @@ glimpse(data$features)
 
 ### Data manipulation
 
-Looking into the above, I think we should remove the string "properties." from the column names.
+Looking into the above, I think we should remove the string "attributes." from the column names.
 
 To do this, we will use the below functions from the `dplyr` package, which is part of the [`tidyverse` ecosystem](https://www.tidyverse.org/).
 

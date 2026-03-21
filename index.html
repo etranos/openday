@@ -144,6 +144,7 @@ window.Quarto = {
   <li><a href="#do-your-first-map" id="toc-do-your-first-map" class="nav-link" data-scroll-target="#do-your-first-map">Do your first map!</a></li>
   </ul></li>
   <li><a href="#accessing-apis-using-existing-r-packages" id="toc-accessing-apis-using-existing-r-packages" class="nav-link" data-scroll-target="#accessing-apis-using-existing-r-packages">Accessing APIs using existing <code>R</code> packages</a></li>
+  <li><a href="#contingency-plan" id="toc-contingency-plan" class="nav-link" data-scroll-target="#contingency-plan">Contingency plan</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -154,7 +155,7 @@ window.Quarto = {
 
 
 <p><img src="logocolour.jpg" class="img-fluid" width="300"></p>
-<p><font size="10">Urban analytics and city science</font> <font size="6"><br>APIs and urban data</font> <font size="4"><br><a href="https://etranos.info/">Professor Emmanouil Tranos</a>, (updated: Mar 20 2026)</font></p>
+<p><font size="10">Urban analytics and city science</font> <font size="6"><br>APIs and urban data</font> <font size="4"><br><a href="https://etranos.info/">Professor Emmanouil Tranos</a>, (updated: Mar 21 2026)</font></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Welcome to the <a href="http://www.bristol.ac.uk/geography/">School of Geographical Sciences</a>, <a href="https://www.bristol.ac.uk/">University of Bristol</a>. The School has a long and distinguished history of teaching quantitative methods, spatial modelling and geographic data science to all of our students. Historically, some of our pioneering staff in this field have included:</p>
@@ -220,7 +221,7 @@ window.Quarto = {
 <div class="cell" type="alert alert-warning">
 <div class="alert alert-warning">
 <p>
-<strong>Question</strong>: Why should you go through all these efforts to build an API request and download the data in <code>JSON</code> file format instead of just downloading a <code>.csv</code> file?
+<strong>Question</strong>: Why should you go through all these efforts to build an API request and access the data in <code>JSON</code> file format instead of just manually downloading a <code>.csv</code> file?
 </p>
 </div>
 </div>
@@ -247,18 +248,18 @@ window.Quarto = {
 <p>To access the data, we are going to use the function <code>fromJSON()</code> from the <code>jsonlite</code> package. Please check the syntax of this function as well as the other function of this package.</p>
 <!-- **Please note** that the above API link is different than the one you can obtain today from [opendata.bristol.gov.uk](https://opendata.bristol.gov.uk/datasets/ca24dc2e210940e0aa9ad3a4785a591b_17/explore). If you use the most recent, you will need to tweak the code bellow. For the purpose of the practical, please use the link provided in the above chunk of code. This is an example of how ephemeral data structures can be! -->
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/17/query?f=json&amp;where=(YEAR%20IN%20('2020'))&amp;outFields=*"</span>, <span class="at">flatten =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/17/query?f=json&amp;where=(YEAR%20IN%20('2020'))&amp;outFields=*"</span>, <span class="at">flatten =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We now have an <code>R</code> object called <code>dat</code>. Let’s try to see how it looks like</p>
+<p>We now have an <code>R</code> object called <code>data</code>. Let’s try to see how it looks like</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "list"</code></pre>
 </div>
 </div>
 <p>So, this is a list. If you need a reminder for what a list is, see <a href="http://adv-r.had.co.nz/Data-structures.html">here</a>. Now the difficult part. Let’s try to figure out the structure of this <code>JSON</code> formatted data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 4
  $ displayFieldName: chr "WARD_NAME"
@@ -315,17 +316,17 @@ window.Quarto = {
   ..$ attributes.ARTS_ENTS_RECREATION_OTHER: int [1:34] 400 250 200 300 175 125 150 2000 500 400 ...</code></pre>
 </div>
 </div>
-<p>Well, it’s complicated. Looking on the above output of <code>list()</code> the object that looks most useful to us is the <code>dat$features</code>.</p>
+<p>Well, it’s complicated. Looking on the above output of <code>list()</code> the object that looks most useful to us is the <code>data$features</code>.</p>
 <div class="cell" type="alert alert-warning">
 <div class="alert alert-warning">
 <p>
-<strong>Question</strong>: Based on the output of <code>str()</code>, why do you think is <code>dat$features</code> the most useful part of <code>dat</code> for us?
+<strong>Question</strong>: Based on the output of <code>str()</code>, why do you think is <code>data$features</code> the most useful part of <code>data</code> for us?
 </p>
 </div>
 </div>
-<p>And if you want to see how the dataframe <code>dat$features</code> looks like, the below function will show the first five rows.</p>
+<p>And if you want to see how the dataframe <code>data$features</code> looks like, the below function will show the first five rows.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dat<span class="sc">$</span>features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data<span class="sc">$</span>features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 34
 Columns: 22
@@ -359,10 +360,10 @@ $ attributes.ARTS_ENTS_RECREATION_OTHER &lt;int&gt; 400, 250, 200, 300, 175, 125
 <p>Looking into the above, I think we should remove the string “properties.” from the column names.</p>
 <p>To do this, we will use the below functions from the <code>dplyr</code> package, which is part of the <a href="https://www.tidyverse.org/"><code>tidyverse</code> ecosystem</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat<span class="sc">$</span>features <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data<span class="sc">$</span>features <span class="sc">%&gt;%</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(<span class="sc">~</span><span class="fu">sub</span>(<span class="st">"attributes."</span>, <span class="st">""</span>, .))   <span class="co"># ~ introduces a formula: function `sub` substitutes (in other words replaces) the string   </span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()                           <span class="co"># provides a glimpse of the output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()                           <span class="co"># provides a glimpse of the output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 34
 Columns: 22
@@ -395,7 +396,7 @@ $ ARTS_ENTS_RECREATION_OTHER &lt;int&gt; 400, 250, 200, 300, 175, 125, 150, 2000
 <h3 class="anchored" data-anchor-id="some-priliminary-analysis">Some priliminary analysis</h3>
 <p>Let’s try now to do some analysis based on these data and create some outputs. The below code will create a plot for the distribution of jobs by industry in Central Bristol. The code is quite long but it is not difficult to understand if you take it one step at a time. I have added comments to the code to make it easier to understand.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>))),           <span class="co"># total jobs in a ward</span></span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>))),           <span class="co"># total jobs in a ward</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>),                             <span class="co"># select the columns you are interested in</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.names =</span> <span class="st">"{col}_share"</span>) <span class="sc">/</span> total) <span class="sc">%&gt;%</span> <span class="co"># divide these columns by total to create industry share within ward  </span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># and name the new columns as oldname_share</span></span>
@@ -424,7 +425,7 @@ $ ARTS_ENTS_RECREATION_OTHER &lt;int&gt; 400, 250, 200, 300, 175, 125, 150, 2000
 </div>
 <p>Now, let’s do something slightly more interesting. Let’s create two plots to compare the job distribution between two Bristol wards, Central and Easton.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>))),           <span class="co"># total jobs in a ward</span></span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>))),           <span class="co"># total jobs in a ward</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>),                             <span class="co"># select the columns you are interested in</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.names =</span> <span class="st">"{col}_share"</span>) <span class="sc">/</span> total) <span class="sc">%&gt;%</span> <span class="co"># divide these columns by total to create industry share within ward  </span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># and name the new columns as oldname_share</span></span>
@@ -451,7 +452,7 @@ $ ARTS_ENTS_RECREATION_OTHER &lt;int&gt; 400, 250, 200, 300, 175, 125, 150, 2000
 </div>
 <p>Obviously the <code>x</code> labels are quite ugly. Let’s fix them. Check the extra lines in the code below.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dat <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>))),           <span class="co"># total jobs in a ward</span></span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">total =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>))),           <span class="co"># total jobs in a ward</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">22</span>),                             <span class="co"># select the columns you are interested in</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.names =</span> <span class="st">"{col}_share"</span>) <span class="sc">/</span> total) <span class="sc">%&gt;%</span> <span class="co"># divide these columns by total to create industry share within ward  </span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                                                           <span class="co"># and name the new columns as oldname_share</span></span>
@@ -488,7 +489,7 @@ $ ARTS_ENTS_RECREATION_OTHER &lt;int&gt; 400, 250, 200, 300, 175, 125, 150, 2000
 <p>What is a geographer without a map? Let’s create a map of the total number of jobs in each ward.</p>
 <p>To do this, we need to first download the spatial information for Bristol’s wards. We can do this with the <code>st_read()</code> function from the <code>sf</code> package. Again, this is freely available from <a href="https://opendata.bristol.gov.uk/datasets/793b569f6f56442bb9e6761f249edd90_4/explore">opendata.bristol.gov.uk</a> and you can find the relevant link under <code>View API Resources</code> as <code>GeoJSON</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>oa.ew <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"https://maps2.bristol.gov.uk/server2/rest/services/ext/ll_boundaries/MapServer/4/query?outFields=*&amp;where=1%3D1&amp;f=geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bristol.wards <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"https://maps2.bristol.gov.uk/server2/rest/services/ext/ll_boundaries/MapServer/4/query?outFields=*&amp;where=1%3D1&amp;f=geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `OGRGeoJSON' from data source 
   `https://maps2.bristol.gov.uk/server2/rest/services/ext/ll_boundaries/MapServer/4/query?outFields=*&amp;where=1%3D1&amp;f=geojson' 
@@ -500,9 +501,9 @@ Bounding box:  xmin: -2.721714 ymin: 51.39728 xmax: -2.51042 ymax: 51.54443
 Geodetic CRS:  WGS 84</code></pre>
 </div>
 </div>
-<p>Then, we need to merge the <code>oa.ew</code> spatial dataframe that contains the spatial information for Bristol’s wards <code>dat</code> dataframe that contains all the job data. We can do this with the <code>left_join()</code> function from the <code>dplyr</code> package and then create a map.</p>
+<p>Then, we need to merge the <code>bristol.wards</code> spatial dataframe that contains the spatial information for Bristol’s wards <code>data</code> dataframe that contains all the job data. We can do this with the <code>left_join()</code> function from the <code>dplyr</code> package and then create a map.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(oa.ew, dat, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"WARD_ID"</span> <span class="ot">=</span> <span class="st">"WARD_CODE"</span>)) <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(bristol.wards, data, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"WARD_ID"</span> <span class="ot">=</span> <span class="st">"WARD_CODE"</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_jobs =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="dv">10</span><span class="sc">:</span><span class="dv">27</span>)))) <span class="sc">%&gt;%</span> <span class="co"># create a new column with the total number of jobs in each ward</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> total_jobs)) <span class="sc">+</span>               <span class="co"># create a choropleth map with the total number of jobs in each ward</span></span>
@@ -535,6 +536,12 @@ Geodetic CRS:  WGS 84</code></pre>
 <li><p>The city of Toronto offers an <code>R</code> <a href="https://sharlagelfand.github.io/opendatatoronto/">package</a> to access <a href="https://open.toronto.ca/">City of Toronto Open Data Portal</a>.</p></li>
 <li><p>See a relevant book by <span class="citation" data-cites="apis">Bauer, Landesvatter, and Behrens (<a href="#ref-apis" role="doc-biblioref">2022</a>)</span> available <a href="https://bookdown.org/paul/apis_for_social_scientists/">here</a>.</p></li>
 </ul>
+</section>
+<section id="contingency-plan" class="level2">
+<h2 class="anchored" data-anchor-id="contingency-plan">Contingency plan</h2>
+<p>Some times, APIs are down. So, if this happens during the practical, please use the below lines of code to load the relevant data. Make sure to replace them in the relevant code chunks.</p>
+<p>data &lt;- fromJSON(“https://www.dropbox.com/scl/fi/9abs2tn878zwyfaqb80ns/bristol_jobs.json?rlkey=gpd3pc5cw4zs2gypcnk1nvdxp&amp;dl=1”, flatten = TRUE)</p>
+<p>bristol.wards &lt;- st_read(“https://www.dropbox.com/scl/fi/72yd1rkb8qbgvl0l7uree/bristol_wards.geojson?rlkey=t2nyuu1jrkx4a2bpb4eri0idi&amp;dl=1”)</p>
 </section>
 <section id="references" class="level2 unnumbered">
 

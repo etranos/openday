@@ -102,7 +102,7 @@ Then, go to the `More Info` icon, scroll down on the left hand side and click on
 ```{block, type='alert alert-warning'}
 
 **Question**: Why should you go through all these efforts to build an API request and 
-download the data in `JSON` file format instead of just downloading a `.csv` file?
+access the data in `JSON` file format instead of just manually downloading a `.csv` file?
 
 ```
 
@@ -139,40 +139,40 @@ To access the data, we are going to use the function `fromJSON()` from the `json
 #| echo: false
 #| eval: false
 
-dat <- jsonlite::fromJSON("https://services2.arcgis.com/a4vR8lmmksFixzmB/ArcGIS/rest/services/Jobs_by_Ward_(by_industry)_in_Bristol_2020/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson", flatten = TRUE)
+data <- fromJSON("https://services2.arcgis.com/a4vR8lmmksFixzmB/ArcGIS/rest/services/Jobs_by_Ward_(by_industry)_in_Bristol_2020/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson", flatten = TRUE)
 ```
 
 <!-- **Please note** that the above API link is different than the one you can obtain today from [opendata.bristol.gov.uk](https://opendata.bristol.gov.uk/datasets/ca24dc2e210940e0aa9ad3a4785a591b_17/explore). If you use the most recent, you will need to tweak the code bellow. For the purpose of the practical, please use the link provided in the above chunk of code. This is an example of how ephemeral data structures can be! -->
 
 ```{r get data}
-dat <- jsonlite::fromJSON("https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/17/query?f=json&where=(YEAR%20IN%20('2020'))&outFields=*", flatten = TRUE)
+data <- jsonlite::fromJSON("https://maps2.bristol.gov.uk/server2/rest/services/ext/ward_profiles/MapServer/17/query?f=json&where=(YEAR%20IN%20('2020'))&outFields=*", flatten = TRUE)
 ```
 
-We now have an `R` object called `dat`. Let's try to see how it looks like
+We now have an `R` object called `data`. Let's try to see how it looks like
 
 ```{r type}
-typeof(dat)
+typeof(data)
 ```
 
 So, this is a list. If you need a reminder for what a list is, see [here](http://adv-r.had.co.nz/Data-structures.html). Now the difficult part. Let's try to figure out the structure of this `JSON` formatted data.
 
 ```{r structure}
-str(dat)
+str(data)
 ```
 
-Well, it's complicated. Looking on the above output of `list()` the object that looks most useful to us is the `dat$features`.
+Well, it's complicated. Looking on the above output of `list()` the object that looks most useful to us is the `data$features`.
 
 ```{block, type='alert alert-warning'}
 
-**Question**: Based on the output of `str()`, why do you think is `dat$features` 
-the most useful part of `dat` for us?
+**Question**: Based on the output of `str()`, why do you think is `data$features` 
+the most useful part of `data` for us?
 
 ```
 
-And if you want to see how the dataframe `dat$features` looks like, the below function will show the first five rows.
+And if you want to see how the dataframe `data$features` looks like, the below function will show the first five rows.
 
 ```{r head}
-glimpse(dat$features)
+glimpse(data$features)
 ```
 
 ### Data manipulation
@@ -182,10 +182,10 @@ Looking into the above, I think we should remove the string "properties." from t
 To do this, we will use the below functions from the `dplyr` package, which is part of the [`tidyverse` ecosystem](https://www.tidyverse.org/).
 
 ```{r wrangling}
-dat <- dat$features %>% 
+data <- data$features %>% 
   rename_with(~sub("attributes.", "", .))   # ~ introduces a formula: function `sub` substitutes (in other words replaces) the string   
 
-dat %>% glimpse()                           # provides a glimpse of the output
+data %>% glimpse()                           # provides a glimpse of the output
 ```
 
 ### Some priliminary analysis
@@ -193,7 +193,7 @@ dat %>% glimpse()                           # provides a glimpse of the output
 Let's try now to do some analysis based on these data and create some outputs. The below code will create a plot for the distribution of jobs by industry in Central Bristol. The code is quite long but it is not difficult to understand if you take it one step at a time. I have added comments to the code to make it easier to understand.
 
 ```{r analysis}
-dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
+data %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
                across(c(5:22),                             # select the columns you are interested in
                       .names = "{col}_share") / total) %>% # divide these columns by total to create industry share within ward  
                                                            # and name the new columns as oldname_share
@@ -217,7 +217,7 @@ dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a war
 Now, let's do something slightly more interesting. Let's create two plots to compare the job distribution between two Bristol wards, Central and Easton.
 
 ```{r comparison}
-dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
+data %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
                across(c(5:22),                             # select the columns you are interested in
                       .names = "{col}_share") / total) %>% # divide these columns by total to create industry share within ward  
                                                            # and name the new columns as oldname_share
@@ -239,7 +239,7 @@ dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a war
 Obviously the `x` labels are quite ugly. Let's fix them. Check the extra lines in the code below.
 
 ```{r comparison with nicer labels}
-dat %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
+data %>% mutate(total = rowSums(across(c(5:22))),           # total jobs in a ward
                across(c(5:22),                             # select the columns you are interested in
                       .names = "{col}_share") / total) %>% # divide these columns by total to create industry share within ward  
                                                            # and name the new columns as oldname_share
@@ -272,14 +272,14 @@ To do this, we need to first download the spatial information for Bristol's ward
 Again, this is freely available from [opendata.bristol.gov.uk](https://opendata.bristol.gov.uk/datasets/793b569f6f56442bb9e6761f249edd90_4/explore) and you can find the relevant link under `View API Resources` as `GeoJSON`. 
 
 ```{r}
-oa.ew <- st_read("https://maps2.bristol.gov.uk/server2/rest/services/ext/ll_boundaries/MapServer/4/query?outFields=*&where=1%3D1&f=geojson")
+bristol.wards <- st_read("https://maps2.bristol.gov.uk/server2/rest/services/ext/ll_boundaries/MapServer/4/query?outFields=*&where=1%3D1&f=geojson")
 ```
 
-Then, we need to merge the `oa.ew` spatial dataframe that contains the spatial information for Bristol's wards
-`dat` dataframe that contains all the job data. We can do this with the `left_join()` function from the `dplyr` package and then create a map.
+Then, we need to merge the `bristol.wards` spatial dataframe that contains the spatial information for Bristol's wards
+`data` dataframe that contains all the job data. We can do this with the `left_join()` function from the `dplyr` package and then create a map.
 
 ```{r}
-left_join(oa.ew, dat, by = c("WARD_ID" = "WARD_CODE")) %>% 
+left_join(bristol.wards, data, by = c("WARD_ID" = "WARD_CODE")) %>% 
   mutate(total_jobs = rowSums(across(c(10:27)))) %>% # create a new column with the total number of jobs in each ward
   ggplot() +
     geom_sf(aes(fill = total_jobs)) +               # create a choropleth map with the total number of jobs in each ward
@@ -308,5 +308,12 @@ Now you might be lucky and somebody else has already done all the infrastructura
 
 -   See a relevant book by @apis available [here](https://bookdown.org/paul/apis_for_social_scientists/).
 
+## Contingency plan
+
+Some times, APIs are down. So, if this happens during the practical, please use the below lines of code to load the relevant data. Make sure to replace them in the relevant code chunks.
+
+data <- fromJSON("https://www.dropbox.com/scl/fi/9abs2tn878zwyfaqb80ns/bristol_jobs.json?rlkey=gpd3pc5cw4zs2gypcnk1nvdxp&dl=1", flatten = TRUE)
+
+bristol.wards <- st_read("https://www.dropbox.com/scl/fi/72yd1rkb8qbgvl0l7uree/bristol_wards.geojson?rlkey=t2nyuu1jrkx4a2bpb4eri0idi&dl=1")
 
 ## References
